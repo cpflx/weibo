@@ -7,11 +7,21 @@ use Illuminate\Support\Facades\Auth;
 
 class SessionController extends Controller
 {
+    /**
+     * 登录模板页
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function create()
     {
         return view('sessions.create');
     }
 
+    /**
+     * 用户登录
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function store(Request $request)
     {
         $credentials = $this->validate($request, [
@@ -28,4 +38,17 @@ class SessionController extends Controller
             return redirect()->back()->withInput(); // 使用 withInput() 后模板里 old('email') 将能获取到上一次用户提交的内容，这样用户就无需再次输入邮箱等内容
         }
     }
+
+    /**
+     * 用户退出
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function destroy()
+    {
+        Auth::logout();
+        session()->flash('success', '您已成功退出！');
+        return redirect('login');
+    }
+
+
 }
