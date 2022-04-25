@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 
 class SessionController extends Controller
 {
-
     /**
      * SessionController constructor.
      * 只让未登录用户访问登录页面
@@ -16,6 +15,11 @@ class SessionController extends Controller
     {
         $this->middleware('guest', [
             'only' => ['create']
+        ]);
+
+        // 限流 10 分钟十次
+        $this->middleware('throttle:10,10', [
+            'only' => ['store']
         ]);
     }
 

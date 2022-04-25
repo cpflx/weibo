@@ -13,6 +13,20 @@ use Illuminate\Support\Str;
 class PasswordController extends Controller
 {
     /**
+     * 以上针对控制器方法 showLinkRequestForm() 做了限流，一分钟内只能允许访问两次。
+     * PasswordController constructor.
+     */
+    public function __construct()
+    {
+        $this->middleware('throttle:2,1', [
+            'only' => ['showLinkRequestForm']
+        ]);
+        $this->middleware('throttle:3,10', [
+            'only' => ['sendResetLinkEmail']
+        ]);
+    }
+
+    /**
      * 重置密码页面
      */
     public function showLinkRequestForm()
@@ -71,7 +85,12 @@ class PasswordController extends Controller
         return view('auth.passwords.reset', compact('token'));
     }
 
-
+    /**
+     * 重置密码
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function reset(Request $request)
     {
         // 1. 验证数据是否合规
@@ -117,7 +136,7 @@ class PasswordController extends Controller
             return redirect()->back();
         }
         // 6.3. 一切正常，更新用户密码
-        $user->updata(['password' => bcrypt($request->password)]);
+        $user->update(['password' => bcrypt($request->password)]);
         // 6.4. 提示用户更新成功
         session()->flash('success', '密码重置成功，请使用新密码登录');
         return redirect()->route('login');
