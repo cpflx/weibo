@@ -20,12 +20,22 @@ class UsersController extends Controller
     public function __construct()
     {
         $this->middleware('auth', [
-            'except' => ['show', 'create', 'store']
+            'except' => ['show', 'create', 'store', 'index']
         ]);
 
         $this->middleware('guest', [
             'only' => ['create']
         ]);
+    }
+
+    /**
+     * 展示用户列表
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function index()
+    {
+        $users = User::all();
+        return view('users.index', compact('users'));
     }
 
     /**
