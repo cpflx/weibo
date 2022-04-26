@@ -9,6 +9,14 @@ class Status extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'content',
+    ];
 
     /**
      * 一对一
