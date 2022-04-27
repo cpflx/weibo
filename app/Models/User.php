@@ -83,7 +83,7 @@ class User extends Authenticatable
         $user_ids = $this->followers()->get()->pluck('id')->toArray(); // => $this->followers->pluck('id')->toArray()
         array_push($user_ids,$this->id);
 
-        return Status::whereIn('user_id',$user_ids)->with('user')->orderBy('created_at', 'desc');
+        return Status::whereIn('user_id',$user_ids)->with('user')->orderBy('created_at', 'desc'); //with 来避免 N+1 问题
     }
 
     /**
